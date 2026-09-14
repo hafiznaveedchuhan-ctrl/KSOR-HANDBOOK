@@ -1,0 +1,135 @@
+{
+  "format": 1,
+  "build_id": "sha256:c4bbe731239cd4c987219b4a7ea6a389ba387f124500c97e6aa4888c62b31171",
+  "ksor_version": "0.0.60",
+  "okf": {
+    "version": "0.2",
+    "commit": "ad30107c31c06aec8a7d5636e0d1058118604e6f",
+    "spec_sha256": "26aa5da029278939f914e578107242d9607d4f2dc5fe153272b82f9ed1030101"
+  },
+  "source_commit": "a83beffb4f13212e35ec133a718c3cf022015667",
+  "dirty": true,
+  "as_of": "2026-09-14T16:28:36.668Z",
+  "drafts": "hidden",
+  "instance_sha256": "5f3419785e0bf40ef597f7177f490f4e04780bda9d80216ae85244e3d1897199",
+  "policy_sha256": "384f6c196502e5ac26ab53e88905b1da39e99c488ab32c8ebe9f05a532f06707",
+  "people_sha256": "01755a5e3cf0b00cd93a6844a765547fff8c5e22e378098193e13044a9bb4721",
+  "ledger_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "ledger_entries": [],
+  "audiences": {
+    "registry": [],
+    "viewers": {
+      "public": [
+        "public"
+      ]
+    }
+  },
+  "documents": [
+    {
+      "path": "content-strategy.md",
+      "sha256": "518dae51fc979873b525205bdbc4ebbe1a4d46adc56f8045199b29a361b866e5",
+      "status": "draft",
+      "audience": [
+        "public"
+      ],
+      "admitted": []
+    },
+    {
+      "path": "governance-ladder.md",
+      "sha256": "c0dc26f31fcbb19128db8bd3e8aca068439814a784e889bf5c35827fc43479a0",
+      "status": "stable",
+      "audience": [
+        "public"
+      ],
+      "admitted": [
+        "public"
+      ]
+    },
+    {
+      "path": "product-hunting-guide.md",
+      "sha256": "8139d0a57f266e7f5004ea9421724c612f8932cd8b17445ab1ef5ac182470190",
+      "status": "draft",
+      "audience": [
+        "public"
+      ],
+      "admitted": []
+    },
+    {
+      "path": "surfaces/for-agents.md",
+      "sha256": "1ab26915897ba587518a50fa811b54898acbd09967f76f9ccbf684e58256a49b",
+      "status": "stable",
+      "audience": [
+        "public"
+      ],
+      "admitted": [
+        "public"
+      ]
+    },
+    {
+      "path": "surfaces/for-people.md",
+      "sha256": "3cb26786225dedca5d871f9bb3dbc5a0913c7fec870c34aeae52862b31fc56ae",
+      "status": "stable",
+      "audience": [
+        "public"
+      ],
+      "admitted": [
+        "public"
+      ]
+    },
+    {
+      "path": "surfaces/overview.md",
+      "sha256": "d35e5c61df23ffc83d2542b6501fde1b989c3e23b846273d7f969af2e6edd4c2",
+      "status": "stable",
+      "audience": [
+        "public"
+      ],
+      "admitted": [
+        "public"
+      ]
+    },
+    {
+      "path": "what-is-a-ksor.md",
+      "sha256": "2b2139295ff479719bcd02c7ba5eda6ea39d408c34ee4cb7bd6528ff7f1b90e4",
+      "status": "stable",
+      "audience": [
+        "public"
+      ],
+      "admitted": [
+        "public"
+      ]
+    },
+    {
+      "path": "what-is-amazon-affiliate.md",
+      "sha256": "1a5e8da2dfde6686f9b82216b4ee506a6ca715e831e56648a13c2ed2519bb6b1",
+      "status": "draft",
+      "audience": [
+        "public"
+      ],
+      "admitted": []
+    }
+  ],
+  "companions": [
+    {
+      "path": "what-is-a-ksor.summary.md",
+      "sha256": "6e28d107e4903f124ff5eb7b82ca8edbf63c4ba6a20ccd2efdf07a72a2481df5"
+    }
+  ],
+  "assets": [],
+  "indexes": [
+    {
+      "path": "index.md",
+      "sha256": "722848c59d587aa8328460c342dc1d603cff12a5e0584b4d16094ffdb290f949"
+    },
+    {
+      "path": "surfaces/index.md",
+      "sha256": "e82913fbd744929824ec494cd87d50d1451856df0d7d321d51df2b7be773314c"
+    }
+  ],
+  "bundles": [
+    {
+      "viewer": "public",
+      "sha256": "fb45dbe7e38f34b1791a68437a139ebf1c74119049335a8234132cac056a0d17",
+      "files": 8
+    }
+  ]
+}
