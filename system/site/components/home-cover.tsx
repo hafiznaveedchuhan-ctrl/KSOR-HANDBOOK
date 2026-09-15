@@ -66,9 +66,9 @@ export function HomeCover({
           by the signature's `mt-auto`, which measured as 197px of dead space
           below the content and none above it (found live 2026-08-22). */}
       <div className="relative flex flex-1 items-center">
-        <div className="mx-auto grid w-full max-w-6xl items-center gap-16 px-6 py-14 lg:grid-cols-[1fr_1fr] lg:gap-20">
+        <div className="mx-auto grid w-full max-w-6xl items-center gap-20 px-6 py-14 lg:grid-cols-[1fr_1fr] lg:gap-24">
           <div>
-            <div className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-500">
+            <div className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-300">
               <div className="flex items-center gap-3">
                 <Image
                   src={mark}
@@ -87,7 +87,7 @@ export function HomeCover({
                 </p>
               </div>
 
-              <h1 className="mt-8 max-w-4xl font-display text-[clamp(2.5rem,5vw,4rem)] leading-[1.02] font-semibold tracking-[-0.022em] text-balance">
+              <h1 className="mt-8 max-w-4xl font-display text-[clamp(2.5rem,5vw,4rem)] leading-[1.02] font-semibold tracking-[-0.03em] text-balance">
                 {title}
               </h1>
 
@@ -100,17 +100,17 @@ export function HomeCover({
             </div>
 
             {purpose === null ? null : (
-              <p className="relative mt-7 max-w-xl text-lg/[1.65] text-pretty sm:text-xl/[1.6] text-[var(--ksor-cover-muted)] motion-safe:animate-in motion-safe:fade-in motion-safe:duration-500 motion-safe:[animation-delay:120ms] motion-safe:[animation-fill-mode:backwards]">
+              <p className="relative mt-7 max-w-xl text-lg/[1.65] text-pretty sm:text-xl/[1.6] text-[var(--ksor-cover-muted)] motion-safe:animate-in motion-safe:fade-in motion-safe:duration-300 motion-safe:[animation-delay:80ms] motion-safe:[animation-fill-mode:backwards]">
                 {purpose}
               </p>
             )}
 
-            <div className="mt-9 flex flex-wrap items-center gap-3 motion-safe:animate-in motion-safe:fade-in motion-safe:duration-500 motion-safe:[animation-delay:220ms] motion-safe:[animation-fill-mode:backwards]">
+            <div className="mt-9 flex flex-wrap items-center gap-3 motion-safe:animate-in motion-safe:fade-in motion-safe:duration-300 motion-safe:[animation-delay:160ms] motion-safe:[animation-fill-mode:backwards]">
               {/* One primary action. It names where it lands, because a front door
               that says only "open" makes you click to find out. */}
               <Link
                 href={firstUrl}
-                className="group inline-flex items-center gap-2.5 rounded-md bg-fd-primary px-6 py-3.5 text-sm font-medium text-fd-primary-foreground transition-transform hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-ring motion-reduce:transition-none"
+                className="group inline-flex items-center gap-2.5 rounded-lg bg-fd-primary px-6 py-3.5 text-sm font-medium text-fd-primary-foreground shadow-xs transition-[transform,box-shadow] hover:-translate-y-px hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-ring motion-reduce:transition-none"
               >
                 Open the record
                 <span

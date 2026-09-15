@@ -10,7 +10,7 @@ export function baseOptions(): BaseLayoutProps {
       // Truncated: a long title forced horizontal scroll on mobile without it
       // (found live, 2026-08-18).
       title: (
-        <span className="max-w-[60vw] truncate font-display text-[0.9375rem] font-semibold tracking-[-0.005em] sm:max-w-none">
+        <span className="max-w-[60vw] truncate font-display text-[0.9375rem] font-semibold tracking-[-0.01em] sm:max-w-none">
           {appTitle}
         </span>
       ),

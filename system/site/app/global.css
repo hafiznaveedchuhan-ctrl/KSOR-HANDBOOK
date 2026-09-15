@@ -20,8 +20,9 @@
 @import "tw-animate-css";
 
 /* next-themes switches the theme by class, so `dark:` must follow the class
-   rather than the OS setting. Nothing here uses a `dark:` utility — the theme
-   is tokens — but a component added from the registry will. */
+   rather than the OS setting. A `dark:` utility now appears in a few places
+   below (the elevated cards on the front door, the primary button) where one
+   value genuinely differs by theme rather than being read off a token. */
 @custom-variant dark (&:is(.dark *));
 
 /* ── Ink, paper, rule ────────────────────────────────────────────────────────
@@ -55,15 +56,15 @@
   --accent: oklch(0.965 0.004 255);
   --accent-foreground: oklch(0.17 0.012 255);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.9 0.004 255);
-  --input: oklch(0.9 0.004 255);
+  --border: oklch(0.88 0.004 255);
+  --input: oklch(0.88 0.004 255);
   --ring: #1d4ed8;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.5rem;
+  --radius: 0.625rem;
   --sidebar: oklch(0.985 0.002 255);
   --sidebar-foreground: oklch(0.17 0.012 255);
   --sidebar-primary: oklch(0.205 0 0);
@@ -103,7 +104,7 @@
   --accent: oklch(0.26 0.014 255);
   --accent-foreground: oklch(0.965 0.004 255);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 12%);
+  --border: oklch(1 0 0 / 14%);
   --input: oklch(1 0 0 / 16%);
   --ring: #7fb0f9;
   --chart-1: oklch(0.87 0 0);
@@ -134,24 +135,45 @@
 
 /* The token → utility mapping shadcn components compile against, as
    `shadcn init` writes it MINUS its two font lines: those pointed at a
-   `--font-sans` that only exists when a next/font face is loaded in the
-   layout, and this scaffold deliberately loads none (see app/layout.tsx —
-   a Google face is fetched at BUILD time, which costs the offline build and
-   byte-identical rebuilds). Tailwind's own system stack stands. */
-/* ── Three voices ────────────────────────────────────────────────────────────
-   The record speaks in a serif, the site speaks in a sans, and the machine
-   surface speaks in mono. Not decoration: each face marks WHO is talking, so a
-   reader can tell the record's own words (its title, its documents' titles)
-   from the site's furniture around them, and both from an address a machine
-   resolves.
+   `--font-sans` that only existed once a next/font face was loaded in the
+   layout, which for a long time this scaffold deliberately did not do (see
+   app/layout.tsx — a Google face is fetched at BUILD time, which costs the
+   offline build and byte-identical rebuilds). `--font-sans` now points at a
+   SELF-hosted face instead, so the line is back. */
+/* ── Two voices, not three ───────────────────────────────────────────────────
+   This used to run three faces — a serif for the record's own words, a
+   system sans for the site's chrome, a system mono for machine text — on the
+   theory that a reader should be able to tell who is talking by typeface
+   alone. Retired 2026-09-15: none of the "professional SaaS" products this
+   pass takes its cues from (Vercel, Linear, Stripe) reach for a serif
+   anywhere, and running one here read as a different product wearing this
+   site's colours rather than the same one, sharper.
 
-   System stacks only. A web font would be fetched at build time, which costs
-   the offline build and byte-identical rebuilds the scaffold pins — and the
-   browser smoke test asserts zero external requests. Georgia and its siblings
-   are on every machine this site is read on, and a serif that arrives instantly
-   beats a distinctive one that arrives late. */
+   The record still needs to sound like itself against the chrome around it —
+   that job just moved from typeface to the weight/size/tracking ramp already
+   tuned below (a document's own title and headings, `#nd-page` and `.prose`
+   further down, are heavier and larger than anything the shell sets on
+   itself). Two voices now: Geist Sans for every word this site or the record
+   sets in prose, Geist Mono for anything a machine reads back literally — a
+   path, a key, a command, a table label.
+
+   Both are the `geist` package (`geist/font/sans`, `geist/font/mono`),
+   wired in app/layout.tsx via next/font/local against files the package
+   ships — no network fetch, at build or at runtime, so the offline-build
+   guarantee that ruled out next/font/google holds exactly as before. */
 @theme {
-  --font-display: ui-serif, Georgia, "Times New Roman", Times, serif;
+  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* The elevated-panel shadow the front door's card stack uses, as a token
+     rather than a literal repeated on every card: light and dark get
+     genuinely different treatments below (`--shadow-ksor-panel-dark` is not
+     the same shadow darkened — a shadow the same colour as the page it falls
+     on is invisible, so the dark pair leans on a cooler, tighter falloff
+     instead of trying to out-black an already near-black background). */
+  --shadow-ksor-panel: 0 28px 60px -32px oklch(0.2 0.02 258 / 0.55);
+  --shadow-ksor-panel-dark: 0 28px 60px -28px oklch(0 0 0 / 0.65);
 }
 
 @theme inline {
@@ -225,6 +247,24 @@
    layout is its own shell and does not use this grid at all. */
 :root {
   --fd-layout-width: 100%;
+}
+
+/* The shell already marks the active sidebar row (`data-active="true"`, a
+   wash of `--primary` at 10% plus primary-coloured text) and already draws a
+   thin `before` bar on it for nested items — both left exactly as the shell
+   ships them. What they don't share with the TOC rail alongside them
+   (`record-toc.tsx`, `border-s-2` on the active heading) is a MARKER on the
+   same edge, in the same weight, so "you are here" reads as one device
+   across both rails rather than two different ones a page apart.
+
+   `box-shadow: inset`, not `border-inline-start`: a real border eats into the
+   row's own padding the instant a link becomes active, so the label would
+   jump two pixels to the right exactly when a reader's eye is on it. An inset
+   shadow paints inside the existing box — same padding, same position,
+   whether the row is active or not — and still clips to the row's own
+   `rounded-lg` because inset shadows follow border-radius. */
+#nd-sidebar [data-active="true"] {
+  box-shadow: inset 2px 0 0 0 var(--color-fd-primary);
 }
 
 /* ── The reading measure ─────────────────────────────────────────────────────
@@ -357,7 +397,7 @@ html > body[data-scroll-locked] {
   padding: 0.7rem 1.5rem;
   font-size: 0.95rem;
   font-weight: 600;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
 }
 
 .prose [role="tab"][data-tab-value][data-state="active"] {
@@ -563,9 +603,9 @@ html > body[data-scroll-locked] {
   font-size: 2.375rem;
   font-weight: 600;
   line-height: 1.1;
-  /* Serifs need less negative tracking than the sans did at this size — the
-     -0.021em that suited the old face closes the counters on this one. */
-  letter-spacing: -0.012em;
+  /* Back to the tighter tracking a sans wants at this size — the -0.012em
+     that suited the old serif's wider counters reads loose on Geist. */
+  letter-spacing: -0.021em;
   text-wrap: balance;
 }
 
@@ -582,15 +622,16 @@ html > body[data-scroll-locked] {
    stylesheet, 2026-08-22). Two things were wrong with that.
 
    Voice: a section heading is the RECORD speaking, exactly like the title
-   above it, so it belongs in the display serif. Left in sans, a single
-   document spoke in two voices and the change of voice meant nothing —
-   which is the one thing the three faces on this site exist to carry.
+   above it, so it takes the same face and weight ramp `--font-display` gives
+   the title — now Geist Sans, same as the chrome around it (the two-voice
+   note above `--font-display`'s definition explains why the voice moved from
+   a separate typeface to weight/size/tracking instead).
 
    Scale: h4 came out at 16px/600 — the body size — and h5/h6 at 16px/400 with
    NO margins, which is a paragraph. The ramp is 38 / 32 / 28 / 22 / 18 / 16 —
    the page title, then h1 down to h6 — against a 16px body. The size step runs
-   out at h5, so below it the serif, the weight and the air above it are what
-   make a heading.
+   out at h5, so below it the weight and the air above it are what make a
+   heading.
 
    A body `# heading` should not exist — the frontmatter title IS the page's
    h1 (scaffolded AGENTS.md) — but nothing enforces it and this repo's own
@@ -613,7 +654,7 @@ html > body[data-scroll-locked] {
 #nd-page .prose :is(h1, h2, h3, h4, h5, h6) {
   font-family: var(--font-display);
   font-weight: 600;
-  letter-spacing: -0.008em;
+  letter-spacing: -0.015em;
   text-wrap: balance;
 }
 
@@ -698,7 +739,7 @@ html > body[data-scroll-locked] {
    hairlines rather than by nothing. The prose default left `tbody tr` with a
    0px bottom border — the cells simply floated. */
 #nd-page .prose thead th {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 500;
   letter-spacing: 0.14em;

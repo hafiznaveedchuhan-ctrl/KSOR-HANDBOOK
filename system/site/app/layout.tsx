@@ -1,16 +1,23 @@
 import { RootProvider } from "fumadocs-ui/provider/next";
 import "./global.css";
 import type { Metadata } from "next";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import { appTitle } from "@/lib/shared";
 import { basePath, badgeByUrl } from "@/lib/source";
 import { readStageManifest } from "@/lib/stage-manifest";
 import KsorSearchDialog from "@/components/search-dialog";
 
-// No next/font/google: it fetches the face from Google at BUILD time, so a
-// scaffolded project could not build offline and two builds of one commit
-// could differ byte-wise (review finding, 2026-08-18). The system UI stack
-// costs zero bytes and zero network; replace it with a self-hosted @font-face
-// if the project wants a specific face.
+// Still no next/font/google: it fetches the face from Google at BUILD time,
+// so a scaffolded project could not build offline and two builds of one
+// commit could differ byte-wise (review finding, 2026-08-18).
+//
+// `geist` is a different thing, not an exception to that rule: its `.woff2`
+// files ship INSIDE the npm package (`geist/font/sans`, `geist/font/mono`),
+// so `next/font/local` reads them off disk the same way it would read a face
+// committed to this repo — zero network fetch, at build or at runtime, same
+// as the system stack it replaces (2026-09-15, adopting Geist for the site's
+// two remaining voices — see the "two voices" note in global.css).
 
 export const metadata: Metadata = {
   title: {
@@ -26,7 +33,7 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body className="flex flex-col min-h-screen">
         {/* Which documents carry a badge, for the search dialog — it
             runs in the browser over a static index that has no field for it.

@@ -44,7 +44,10 @@ export function RecordShell({ children }: { children: ReactNode }): ReactElement
         // production build, which is why it survived: it only shows in the
         // dev server, where the adopter meets it first.
         footer: (
-          <div key="record-footer" className="mt-3 flex flex-col gap-2">
+          <div
+            key="record-footer"
+            className="mt-3 flex flex-col gap-3 border-t border-fd-border pt-3"
+          >
             {/* The record's own identity, on every page rather than only the
                 home page: the slug is what citations carry and llms.txt is the
                 door an agent is told to read. The sidebar had three links and

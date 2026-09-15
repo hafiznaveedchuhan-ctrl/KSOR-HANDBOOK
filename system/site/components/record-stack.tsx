@@ -44,10 +44,10 @@ export function RecordStack({
   const footed = lead.owner !== null || lead.documents > 0;
 
   return (
-    <div className="w-full max-w-md motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-3 motion-safe:duration-700 motion-safe:[animation-delay:180ms] motion-safe:[animation-fill-mode:backwards]">
+    <div className="w-full max-w-md motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-3 motion-safe:duration-400 motion-safe:[animation-delay:140ms] motion-safe:[animation-fill-mode:backwards]">
       <Link
         href={lead.url}
-        className="group relative z-30 block rounded-xl border border-[var(--ksor-cover-panel-rule)] bg-[var(--ksor-cover-panel)] p-7 shadow-[0_28px_60px_-32px_rgb(15_23_42/0.55)] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-ring motion-reduce:transition-none"
+        className="group relative z-30 block rounded-xl border border-[var(--ksor-cover-panel-rule)] bg-[var(--ksor-cover-panel)] p-8 shadow-[var(--shadow-ksor-panel)] transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[0_32px_70px_-28px_oklch(0.2_0.02_258_/_0.6)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-ring motion-reduce:transition-none dark:shadow-[var(--shadow-ksor-panel-dark)] dark:[box-shadow:inset_0_1px_0_0_oklch(1_0_0/0.04),var(--shadow-ksor-panel-dark)] dark:hover:[box-shadow:inset_0_1px_0_0_oklch(1_0_0/0.04),0_32px_70px_-24px_oklch(0_0_0/0.75)]"
       >
         <div className="flex items-baseline justify-between gap-4">
           {/* The one label that ties this card to the button beside it. */}
@@ -85,7 +85,7 @@ export function RecordStack({
         <Link
           key={entry.url}
           href={entry.url}
-          className="group relative -mt-4 block rounded-xl border border-[var(--ksor-cover-panel-rule)] bg-[var(--ksor-cover-panel)] px-7 pt-6 pb-4 shadow-[0_18px_40px_-30px_rgb(15_23_42/0.5)] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-ring motion-reduce:transition-none"
+          className="group relative -mt-4 block rounded-xl border border-[var(--ksor-cover-panel-rule)] bg-[var(--ksor-cover-panel)] px-8 pt-6 pb-4 shadow-[0_18px_40px_-30px_oklch(0.2_0.02_258_/_0.5)] transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[0_20px_46px_-26px_oklch(0.2_0.02_258_/_0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-ring motion-reduce:transition-none dark:shadow-[0_18px_40px_-26px_oklch(0_0_0/0.6)] dark:hover:shadow-[0_20px_46px_-22px_oklch(0_0_0/0.68)]"
           style={{
             zIndex: 20 - index * 10,
             transform: `scale(${1 - (index + 1) * 0.028})`,

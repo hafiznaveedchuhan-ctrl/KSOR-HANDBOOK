@@ -1,17 +1,17 @@
 {
   "format": 1,
-  "build_id": "sha256:c4bbe731239cd4c987219b4a7ea6a389ba387f124500c97e6aa4888c62b31171",
+  "build_id": "sha256:7b71dded0e3f59abde527e0aee1d8bcf74c1f514d3f3462b163897885d56eafa",
   "ksor_version": "0.0.60",
   "okf": {
     "version": "0.2",
     "commit": "ad30107c31c06aec8a7d5636e0d1058118604e6f",
     "spec_sha256": "26aa5da029278939f914e578107242d9607d4f2dc5fe153272b82f9ed1030101"
   },
-  "source_commit": "a83beffb4f13212e35ec133a718c3cf022015667",
+  "source_commit": "0d61252d9e78f5a8c88cc02e73d60045d1ba5e81",
   "dirty": true,
-  "as_of": "2026-09-14T16:28:36.668Z",
+  "as_of": "2026-09-15T17:18:34.853Z",
   "drafts": "hidden",
-  "instance_sha256": "5f3419785e0bf40ef597f7177f490f4e04780bda9d80216ae85244e3d1897199",
+  "instance_sha256": "2017a4eee8a50843d679294cf97c2269942063564f5be86c518f48db2d9e504b",
   "policy_sha256": "384f6c196502e5ac26ab53e88905b1da39e99c488ab32c8ebe9f05a532f06707",
   "people_sha256": "01755a5e3cf0b00cd93a6844a765547fff8c5e22e378098193e13044a9bb4721",
   "ledger_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -37,6 +37,17 @@
     {
       "path": "governance-ladder.md",
       "sha256": "c0dc26f31fcbb19128db8bd3e8aca068439814a784e889bf5c35827fc43479a0",
+      "status": "stable",
+      "audience": [
+        "public"
+      ],
+      "admitted": [
+        "public"
+      ]
+    },
+    {
+      "path": "how-to-write-product-reviews.md",
+      "sha256": "4426d74b03f823337bc81bab46cc3f9ff9e0245d5254254869cd751d9b8e6785",
       "status": "stable",
       "audience": [
         "public"
@@ -118,7 +129,7 @@
   "indexes": [
     {
       "path": "index.md",
-      "sha256": "722848c59d587aa8328460c342dc1d603cff12a5e0584b4d16094ffdb290f949"
+      "sha256": "dda38e589adbaf78a0df2ce86fd5803f4c7311d985c5c07def6641436d070da9"
     },
     {
       "path": "surfaces/index.md",
@@ -128,8 +139,8 @@
   "bundles": [
     {
       "viewer": "public",
-      "sha256": "fb45dbe7e38f34b1791a68437a139ebf1c74119049335a8234132cac056a0d17",
-      "files": 8
+      "sha256": "66def84d1b7d92eb4a9d0e6199f1e7262245f4d98196e12b07df76f86a9cb07c",
+      "files": 9
     }
   ]
 }
