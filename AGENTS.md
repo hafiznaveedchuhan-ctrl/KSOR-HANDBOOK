@@ -994,3 +994,18 @@ You own `system/site/` outright — these are the seams, cheapest first:
 Everything. The scaffold was emitted by `ksor init` (version recorded in
 `instance.md`) and belongs to this repository outright — change anything in
 `system/` deliberately; the knowledge in `knowledge/` was always yours.
+
+## Operational rules — Ibrahim Digital Solutions
+
+- `npm run provision` — **one time only**. It applies the DB schema and
+  grants; re-running against a live database resets state. Never repeat it.
+- Daily startup: `npm run dev` (site, :3000) + `npm run serve` (MCP, :8080).
+- New or edited knowledge content: run `npm run refresh` — never `provision`.
+- `.env` — never commit. Holds `KSOR_DB_URL` and `GEMINI_API_KEY`.
+- `knowledge/` — never hand-edit a finished/approved document directly.
+  Propose the change in Plan Mode first, then write it.
+- `instance.md` scope changes — publish via `npm run refresh`, not
+  `provision`.
+
+Stack: Next.js + Fumadocs (site), Neon Postgres + pgvector (embeddings), ksor
+MCP server (agent surface). Not Docusaurus.
