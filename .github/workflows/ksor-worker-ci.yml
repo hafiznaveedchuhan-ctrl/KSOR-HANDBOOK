@@ -1,0 +1,41 @@
+name: ksor-worker CI
+
+on:
+  push:
+    branches: [main]
+    paths: ["ksor-worker/**", ".github/workflows/ksor-worker-ci.yml"]
+  pull_request:
+    paths: ["ksor-worker/**", ".github/workflows/ksor-worker-ci.yml"]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: ksor-worker
+
+jobs:
+  build:
+    name: Install and import-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      # No OPENAI_API_KEY or live KSOR server in CI, so this checks the code
+      # is well-formed and importable, not a live model/MCP call. worker.py's
+      # MCP client construction and compare.py's prompt setup both run at
+      # import time (see src/ksor_worker/common.py, worker.py, compare.py),
+      # so a broken import, a bad MCPServerStreamableHttp call shape, or a
+      # missing dependency fails this step.
+      - name: Import sanity check
+        run: uv run python -c "import ksor_worker.worker, ksor_worker.compare; print('imports OK')"
