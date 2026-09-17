@@ -99,3 +99,27 @@ fresh `uv run` picks up the new `INSTRUCTIONS`.
 
 **Resolution:** user restarted the script fresh and confirmed it now answers
 correctly ("hogyaha bhai"). No code change needed — closing this out.
+
+## 2026-09-17 — GitHub red X: a Vercel project, not a CI failure
+
+Pushing `ksor-worker/` triggered an unrelated Vercel project
+(`hafiznaveedchuhans-projects/ksor-worker`, linked to this same GitHub repo)
+to try auto-deploying this folder as a web app. Both real CI checks (the
+knowledge validator and `ksor-worker CI`) were green the whole time — the
+red X was Vercel's own commit status, failing with:
+
+```
+Error: No python entrypoint found. Set "tool.vercel.entrypoint" in
+pyproject.toml or define an entrypoint in one of: app.py, index.py,
+server.py, main.py, wsgi.py, asgi.py, ...
+```
+
+Correct diagnosis: `worker.py`/`compare.py` are interactive CLI scripts
+(`input()` loops) — there is no HTTP entrypoint, and there fundamentally
+can't be one without rewriting them as a web app (Vercel supports Python web
+apps fine; the gap is in this project's code shape, not the platform).
+
+**Resolution:** user deleted the Vercel project from the dashboard. The
+historical failed status stays on the commit it was posted to (GitHub commit
+statuses are immutable), but no new commit will get a Vercel status at all
+now that the integration is gone.
