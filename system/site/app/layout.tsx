@@ -7,6 +7,7 @@ import { appTitle } from "@/lib/shared";
 import { basePath, badgeByUrl } from "@/lib/source";
 import { readStageManifest } from "@/lib/stage-manifest";
 import KsorSearchDialog from "@/components/search-dialog";
+import { RefundWidget } from "@/components/refund-widget";
 
 // Still no next/font/google: it fetches the face from Google at BUILD time,
 // so a scaffolded project could not build offline and two builds of one
@@ -66,6 +67,9 @@ export default function Layout({ children }: LayoutProps<"/">) {
         >
           {children}
         </RootProvider>
+        {/* Global, on every route (including any that bypass RecordShell) —
+            mounted here rather than inside a layout further down the tree. */}
+        <RefundWidget />
       </body>
     </html>
   );
