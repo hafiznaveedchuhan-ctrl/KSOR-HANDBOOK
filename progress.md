@@ -218,6 +218,21 @@ judged NOT a gap — that's `AGENTS.md`'s job, already updated earlier this
 session, and `README.md` is the generic scaffold doc, not the
 project-specific operational contract.)
 
+**Final score across both repos: 98/100** — the 2 real bugs this audit
+found (both in `ksor-worker`'s code — a fabricated citation URL and an
+inconsistent abstention wording, full detail in that repo's own
+`progress.md`) are fixed and re-verified live; the single 2-point
+deduction (Widget & UI) is a session tooling constraint — no browser
+automation available or installable here, confirmed directly — not a
+defect in this repo or the widget itself. Offered to attempt installing
+Playwright to close it; the user chose to keep 98/100 rather than add a
+new dependency for a 2-point gain, since the wiring/rendering evidence
+already gathered is strong and a visual check takes them under a minute.
+
+Committed and pushed as `442ee92`; `ksor-worker`'s corresponding commits
+are `cc8c681`/`9dff20e`. Both repos' CI confirmed green on these commits
+via the GitHub API before reporting the final score.
+
 ## Open items
 
 - `.ksor/governance.yaml` approval authority is still the placeholder actor
