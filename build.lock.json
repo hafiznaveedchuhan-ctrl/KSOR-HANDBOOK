@@ -1,15 +1,15 @@
 {
   "format": 1,
-  "build_id": "sha256:897aa0ff018a25122086e5ea73a7c75c1867feec522d39ab101b52a0b67a56ea",
+  "build_id": "sha256:bd239250ac64708a6e1c5ee6508c20134f7ef208a1c60aaa5d7225664f616420",
   "ksor_version": "0.0.60",
   "okf": {
     "version": "0.2",
     "commit": "ad30107c31c06aec8a7d5636e0d1058118604e6f",
     "spec_sha256": "26aa5da029278939f914e578107242d9607d4f2dc5fe153272b82f9ed1030101"
   },
-  "source_commit": "7581b5b23c903a25dd4c0815eb80a540959cfbd6",
+  "source_commit": "8c2443773fabcad1b852f9e2a18e5c0416e26738",
   "dirty": true,
-  "as_of": "2026-09-15T19:07:47.123Z",
+  "as_of": "2026-09-21T05:56:46.117Z",
   "drafts": "hidden",
   "instance_sha256": "739d941fa0fcdb48fde6aed18b2492dcfc04f9a8148b2eb9453b71e3aefe3a29",
   "policy_sha256": "384f6c196502e5ac26ab53e88905b1da39e99c488ab32c8ebe9f05a532f06707",
@@ -64,6 +64,39 @@
         "public"
       ],
       "admitted": []
+    },
+    {
+      "path": "product-listing.md",
+      "sha256": "7b67271bcbd045f19fab8448abaaeda8244357d598438d8886523b6c4758ceff",
+      "status": "stable",
+      "audience": [
+        "public"
+      ],
+      "admitted": [
+        "public"
+      ]
+    },
+    {
+      "path": "product-sourcing.md",
+      "sha256": "91137d4caa37e9c48955cdfe0f128bd381a6115944e3d364f6a4158e5e53f27c",
+      "status": "stable",
+      "audience": [
+        "public"
+      ],
+      "admitted": [
+        "public"
+      ]
+    },
+    {
+      "path": "refund-policy.md",
+      "sha256": "d2869657553aa045879bad06b0980a11d76674b14f1e7bbe7824b345901e8dc5",
+      "status": "stable",
+      "audience": [
+        "public"
+      ],
+      "admitted": [
+        "public"
+      ]
     },
     {
       "path": "surfaces/for-agents.md",
@@ -129,7 +162,7 @@
   "indexes": [
     {
       "path": "index.md",
-      "sha256": "c4e43c14fe6b449fe27b2f7f495e94007849efdc27ecff691a30babd8d479dbc"
+      "sha256": "3af3c3c61b45d1b857fa367b359b08b365d995ff15479a257fc35d9fe0819efd"
     },
     {
       "path": "surfaces/index.md",
@@ -139,8 +172,8 @@
   "bundles": [
     {
       "viewer": "public",
-      "sha256": "e9f2038ab6b8ffd6fa7c69c180674bdbff3bb727473bc32019a85b150588ef17",
-      "files": 9
+      "sha256": "8e5fc95a6e66b5e4e848301bbebab7216f7d240e7e8c7837d4bc36775a06f621",
+      "files": 12
     }
   ]
 }
