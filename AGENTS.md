@@ -1012,11 +1012,14 @@ Everything. The scaffold was emitted by `ksor init` (version recorded in
   `provision`.
 - **The site's chat widget needs a third process**: `ksor-worker` — a
   separate repository, not part of this one — running its own FastAPI app
-  (`uv run uvicorn main:app --port 8000` in that project) for `/ask` and
-  `/refund` to answer anything. The widget calls it directly from the
-  browser (this site is a static export with no live server of its own to
-  proxy through), so it must be reachable at the URL the widget's build was
-  given. `handbook`/`ksor-worker` are deliberately separate repos and
+  (`uv run uvicorn main:app --port 8000` in that project). The widget calls
+  its `/chat` endpoint directly from the browser (this site is a static
+  export with no live server of its own to proxy through), so `ksor-worker`
+  must be reachable at the URL the widget's build was given. `/chat` is the
+  general, unrestricted-by-topic assistant (refunds included, no domain
+  split) — distinct from that project's narrower `/ask` (excludes refunds)
+  and `/refund` (refunds only) endpoints, which the widget does not call.
+  `handbook`/`ksor-worker` are deliberately separate repos and
   toolchains (npm vs. uv) — see `ksor-worker`'s own `docs/adr/` for why.
 
 Stack: Next.js + Fumadocs (site), Neon Postgres + pgvector (embeddings), ksor

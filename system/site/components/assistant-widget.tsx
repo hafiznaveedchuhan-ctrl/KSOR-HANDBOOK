@@ -8,41 +8,43 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 /**
- * The URL of the refund agent's own service (a separate repository,
- * `ksor-worker`, run as its own FastAPI process — see AGENTS.md's
- * "Operational rules" section for why). Baked in at BUILD time: this site
- * is a static export with no live server of its own, so there's no
- * runtime env var to read here, only `NEXT_PUBLIC_*` values Next inlines
- * when the site is built.
+ * The URL of ksor-worker's own FastAPI service (a separate repository,
+ * run as its own process — see AGENTS.md's "Operational rules" section
+ * for why). Baked in at BUILD time: this site is a static export with no
+ * live server of its own, so there's no runtime env var to read here,
+ * only `NEXT_PUBLIC_*` values Next inlines when the site is built.
  */
-const REFUND_AGENT_URL = process.env.NEXT_PUBLIC_KSOR_WORKER_URL ?? "http://127.0.0.1:8000";
+const ASSISTANT_URL = process.env.NEXT_PUBLIC_KSOR_WORKER_URL ?? "http://127.0.0.1:8000";
 
-const SESSION_STORAGE_KEY = "ksor-refund-session-id";
+const SESSION_STORAGE_KEY = "ksor-chat-session-id";
 
 interface ChatMessage {
   role: "user" | "assistant" | "error";
   content: string;
 }
 
-interface RefundResponse {
+interface ChatApiResponse {
   answer: string;
   session_id: string;
 }
 
 /**
- * A floating refund-assistant widget, present on every page (mounted once
- * in app/layout.tsx). Talks directly to the refund agent's own FastAPI
- * service in the browser — there is no route in this app to proxy
- * through, since `output: "export"` means no live Next server exists at
- * runtime to host one.
+ * A floating assistant widget, present on every page (mounted once in
+ * app/layout.tsx). Talks to ksor-worker's `/chat` endpoint — the general,
+ * unrestricted-by-topic agent (refunds included, no domain split; see
+ * ksor-worker's `general_agent.py` and CLAUDE.md rule 3/8 for why `/ask`
+ * and `/refund` stay separate and narrower while this one doesn't split
+ * at all). Calls the API directly from the browser — there is no route in
+ * this app to proxy through, since `output: "export"` means no live Next
+ * server exists at runtime to host one.
  *
  * Memory persists across a reload, not just within one open panel: the
  * session id is generated once and kept in localStorage, and the same id
  * is sent on every request so the agent's own server-side session
  * (a SQLiteSession, keyed by this id) keeps accumulating the same
- * conversation.
+ * conversation — across topics, not just within one.
  */
-export function RefundWidget() {
+export function AssistantWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -81,7 +83,7 @@ export function RefundWidget() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${REFUND_AGENT_URL}/refund`, {
+      const res = await fetch(`${ASSISTANT_URL}/chat`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ query, session_id: sessionId }),
@@ -92,7 +94,7 @@ export function RefundWidget() {
         throw new Error(body?.detail ?? `Request failed (${res.status})`);
       }
 
-      const data = (await res.json()) as RefundResponse;
+      const data = (await res.json()) as ChatApiResponse;
       setSessionId(data.session_id);
       try {
         window.localStorage.setItem(SESSION_STORAGE_KEY, data.session_id);
@@ -116,7 +118,7 @@ export function RefundWidget() {
       {isOpen && (
         <div
           role="dialog"
-          aria-label="Refund assistant"
+          aria-label="KSOR assistant"
           className={cn(
             "flex h-[min(32rem,calc(100vh-8rem))] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden",
             "rounded-2xl border border-border bg-popover text-popover-foreground shadow-2xl",
@@ -124,11 +126,11 @@ export function RefundWidget() {
           )}
         >
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
-            <span className="text-sm font-semibold">Refund Assistant</span>
+            <span className="text-sm font-semibold">KSOR Assistant</span>
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              aria-label="Close refund assistant"
+              aria-label="Close assistant"
               className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-ring"
             >
               <X className="size-4" />
@@ -138,7 +140,8 @@ export function RefundWidget() {
           <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
             {messages.length === 0 && (
               <p className="text-sm text-muted-foreground">
-                Ask about refunds, returns, or how they affect your affiliate commission.
+                Ask anything about Amazon affiliate marketing — product hunting, reviews,
+                sourcing, listings, or refunds and returns.
               </p>
             )}
             {messages.map((message, i) => (
@@ -173,7 +176,7 @@ export function RefundWidget() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask a refund question…"
+              placeholder="Ask a question…"
               aria-label="Your question"
               disabled={isLoading}
             />
@@ -189,7 +192,7 @@ export function RefundWidget() {
         type="button"
         size="icon-lg"
         onClick={() => setIsOpen((v) => !v)}
-        aria-label={isOpen ? "Close refund assistant" : "Open refund assistant"}
+        aria-label={isOpen ? "Close assistant" : "Open assistant"}
         className={cn(
           "rounded-full shadow-lg hover:scale-105 active:scale-95",
           "motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in motion-safe:duration-300",

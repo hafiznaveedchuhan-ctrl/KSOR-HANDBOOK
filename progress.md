@@ -233,6 +233,27 @@ Committed and pushed as `442ee92`; `ksor-worker`'s corresponding commits
 are `cc8c681`/`9dff20e`. Both repos' CI confirmed green on these commits
 via the GitHub API before reporting the final score.
 
+## 2026-09-21 (continued) — Widget generalized, no longer refund-only
+
+User asked for the widget to answer from every agent, not just refunds.
+Clarified: one unified general assistant, not a selector or side-by-side
+comparison. Full backend design (`general_agent.py`, `/chat`) is in
+`ksor-worker`'s own `progress.md` — this entry covers only what changed in
+this repo.
+
+`system/site/components/refund-widget.tsx` **renamed** to
+`assistant-widget.tsx` (`RefundWidget` → `AssistantWidget`) — the old name
+would have actively misled once the component stopped being refund-only.
+Fetch target switched from `ksor-worker`'s `/refund` to its new `/chat`
+endpoint (general, no topic split, still has memory). Header/placeholder/
+aria-label copy generalized to match. `app/layout.tsx`'s import updated.
+
+Verified: `tsc --noEmit` clean; the live dev server's rendered homepage
+HTML shows the new `aria-label="Open assistant"` on the launcher; a fresh
+CORS preflight against `/chat` (not just the old `/refund`) returns the
+correct `access-control-allow-origin` for this site's origin.
+`AGENTS.md`'s widget note updated to name `/chat` specifically.
+
 ## Open items
 
 - `.ksor/governance.yaml` approval authority is still the placeholder actor
