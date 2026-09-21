@@ -8,12 +8,16 @@
       corrected from the original brief — this scaffold uses
       `fumadocs-core`/`fumadocs-mdx`, no Docusaurus config exists).
 - [x] MCP server live at :8080 (`ksor serve`) — confirmed listening.
-- [x] Knowledge documents created: **9 total**, not 8 — 4 Amazon-affiliate
-      content docs (`what-is-amazon-affiliate`, `product-hunting-guide`,
-      `content-strategy`, `how-to-write-product-reviews`) + 5 KSoR-scaffold
-      docs (`what-is-a-ksor`, `governance-ladder`, `surfaces/overview`,
-      `surfaces/for-people`, `surfaces/for-agents`). 6 of 9 admitted to the
-      machine surface (`llms.txt`/MCP) as of the last build.
+- [x] Knowledge documents: **12 total** as of 2026-09-21 — 7
+      Amazon-affiliate content docs (`what-is-amazon-affiliate`,
+      `product-hunting-guide`, `content-strategy` — all still `draft` —
+      plus `how-to-write-product-reviews`, `product-sourcing`,
+      `product-listing`, `refund-policy`, all `stable`/approved) + 5
+      KSoR-scaffold docs (`what-is-a-ksor`, `governance-ladder`,
+      `surfaces/overview`, `surfaces/for-people`, `surfaces/for-agents`,
+      all `stable`). 9 of 12 admitted to the machine surface
+      (`llms.txt`/MCP) as of generation 7 (2026-09-21) — the 3 still-draft
+      Amazon docs are the only ones held back.
 - [x] Two-reader doctrine implemented on `how-to-write-product-reviews.md`:
       unheaded human-orientation intro, then H2/H3 sections written as
       agent-citable rules, sourced against the FTC endorsement guides and the
@@ -63,6 +67,84 @@
   provided is kept commented out in `.env` for a future attempt.
 - Fixed a missing trailing newline in `instance.md` (cosmetic/lint hygiene,
   not a `format-checker` failure).
+
+## 2026-09-16/17 session notes — `ksor-worker` briefly lived here, then split out
+
+- Built a separate demo project, `ksor-worker` (Python/uv, OpenAI Agents
+  SDK), at `~/ksor-worker` — two AI workers (`/ask` grounded via this
+  record's MCP server, `/compare` ungrounded) proving what grounding buys
+  you. Full detail lives in that project's own `progress.md`, not
+  duplicated here — this entry covers only what touched `handbook`.
+- `ksor-worker` was copied into `handbook/ksor-worker/` and pushed to this
+  same GitHub repo (`c4ebc7f`), along with its own CI workflow
+  (`9be97a1`) — a decision made when the two projects were still going to
+  share one repo.
+- **A Vercel project (`hafiznaveedchuhans-projects/ksor-worker`) auto-linked
+  to this GitHub repo and tried to deploy the copied `ksor-worker/` folder
+  as a Python web app**, failing every push with "No python entrypoint
+  found" — correct, since `worker.py`/`compare.py` were interactive CLI
+  scripts (`input()` loops) at that point, with no HTTP entrypoint at all.
+  Diagnosed via the Vercel API/MCP tools (`GET .../commits/{sha}/status`
+  showed the real `Vercel` context failing, not either GitHub Actions
+  check), documented in `64d0136`. The user deleted the Vercel project from
+  its dashboard once diagnosed (I don't have permission to pause/delete
+  Vercel projects programmatically — tried, got `403`).
+- **Decision, per the user's explicit production-deployment plan (Vercel or
+  Render for `ksor-worker`, this record's own path for `handbook`):
+  `handbook` and `ksor-worker` must be genuinely separate GitHub repos —
+  no shared repo, no copies.** Removed `handbook/ksor-worker/` and its
+  orphaned CI workflow (`b790e24`) — nothing under `knowledge/` or
+  `system/` was touched by this. `ksor-worker` now lives in its own
+  separate repository (see its own `docs/adr/` for why).
+- A GitHub Personal Access Token was pasted into chat and briefly landed in
+  the wrong place — a commented-out `# OPENAI_API_KEY=` line in this
+  repo's own `.env` (line 20) had a value appended after it without
+  uncommenting the line. Moved into `ksor-worker/.env` (where it's
+  actually used) and the line here restored to its harmless commented
+  form. `.env` is gitignored either way, so this was never committed, but
+  worth recording since the token was exposed in a chat transcript — the
+  user was told to revoke/rotate it independent of this fix.
+
+## 2026-09-21 session notes — 3 more Amazon-affiliate documents, and an ingest bug
+
+- Added three new `status: stable`, `human:you`-approved documents, all
+  within `instance.md`'s existing Amazon-affiliate scope (confirmed with
+  the user before writing — a generic/company refund policy would have
+  been out of scope; this instead covers Amazon's *own* return/refund
+  mechanics and their effect on affiliate commissions):
+  - `knowledge/product-sourcing.md` — sourcing product images/data
+    correctly (SiteStripe vs. PA-API vs. manual), licensing rules, keeping
+    data fresh.
+  - `knowledge/product-listing.md` — the anatomy of a converting listing
+    block, formats, ranking disclosure, a converts-vs-kills table.
+  - `knowledge/refund-policy.md` — how a return reverses a commission, the
+    payout holding period, return windows (deliberately not asserting
+    exact category day-counts not confidently sourced).
+  - Committed as `c578f59`. `npm run check` passed clean on all three.
+- **Bug found in `ksor ingest --flip` itself, not in the documents**: the
+  first ingest run built generation 6 with all three new documents
+  embedded and reported success, but its output was silently missing the
+  "pre-flip delta"/"FLIPPED active generation" lines that a normal
+  successful flip prints — meaning generation 6 was built but **never
+  actually activated**. The live MCP server kept serving generation 5 with
+  no error of any kind: `read`/`search` calls for the new documents
+  returned "no document with slug," even after a full `ksor serve`
+  restart (ruled out any in-memory caching — confirmed from the installed
+  package's own source that `active_generation` is read from the
+  `corpora` table fresh on every query, not cached at boot). A second,
+  identical `ksor ingest --flip` (generation 7) printed the expected
+  `FLIPPED active generation -> 7` and the three new slugs under "added,"
+  and every document became immediately readable and correctly ranked in
+  search. **Root cause of the first run's silent non-flip was not fully
+  identified** — recorded here as something to watch for: if a future
+  ingest's output doesn't show a delta/flip confirmation line, assume it
+  did NOT activate and re-run before trusting the new content is live.
+- This record's MCP server (`ksor serve`) was also found running via a
+  process over an hour old at one point mid-session, serving a stale
+  generation — restarted as part of diagnosing the above. Not itself a bug
+  (restarting periodically after an ingest is normal hygiene), but the
+  actual root cause turned out to be the flip issue above, not staleness
+  from the long-running process.
 
 ## Open items
 

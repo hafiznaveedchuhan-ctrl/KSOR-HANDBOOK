@@ -1001,11 +1001,23 @@ Everything. The scaffold was emitted by `ksor init` (version recorded in
   grants; re-running against a live database resets state. Never repeat it.
 - Daily startup: `npm run dev` (site, :3000) + `npm run serve` (MCP, :8080).
 - New or edited knowledge content: run `npm run refresh` — never `provision`.
+  After a `--flip`, confirm the CLI output actually shows a
+  `FLIPPED active generation -> N` line before trusting new content is
+  live — a flip that prints no delta/confirmation line did not activate
+  (hit for real on 2026-09-21; see `progress.md`).
 - `.env` — never commit. Holds `KSOR_DB_URL` and `GEMINI_API_KEY`.
 - `knowledge/` — never hand-edit a finished/approved document directly.
   Propose the change in Plan Mode first, then write it.
 - `instance.md` scope changes — publish via `npm run refresh`, not
   `provision`.
+- **The site's chat widget needs a third process**: `ksor-worker` — a
+  separate repository, not part of this one — running its own FastAPI app
+  (`uv run uvicorn main:app --port 8000` in that project) for `/ask` and
+  `/refund` to answer anything. The widget calls it directly from the
+  browser (this site is a static export with no live server of its own to
+  proxy through), so it must be reachable at the URL the widget's build was
+  given. `handbook`/`ksor-worker` are deliberately separate repos and
+  toolchains (npm vs. uv) — see `ksor-worker`'s own `docs/adr/` for why.
 
 Stack: Next.js + Fumadocs (site), Neon Postgres + pgvector (embeddings), ksor
 MCP server (agent surface). Not Docusaurus.
