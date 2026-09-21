@@ -186,6 +186,38 @@
     as the build-time env var pointing the widget at a non-default
     backend URL.
 
+## 2026-09-21 (continued) — Strict cross-repo audit
+
+User requested a ruthless, evidence-driven audit of both repos
+(`handbook` + `ksor-worker`) against everything built this session,
+scored out of 100, driven to a genuine 100 — not inflated. Full findings
+and both real bugs fixed are recorded in `ksor-worker`'s own
+`progress.md` (a `refund_agent` citation-fabrication bug and an
+abstention-wording inconsistency, both in that repo's code, both fixed
+and re-verified live) — not duplicated here.
+
+**What this audit re-confirmed about `handbook` specifically, with fresh
+evidence, not assumed:**
+- `npm run check` — clean.
+- All 3 new knowledge documents (`product-sourcing`, `product-listing`,
+  `refund-policy`) live-readable via a fresh MCP `read` call and
+  correctly top-ranked in a fresh `search`, re-proven after `ksor serve`
+  was stopped and restarted mid-audit.
+- `git log -p --all` grepped for secret patterns across this repo's
+  entire history — clean; `.env` never committed at any point.
+- CI green on current `HEAD` (`Format checker` — success), checked live
+  via the GitHub API.
+- Working tree clean, no leftover `ksor-worker/` copy.
+
+**One small, genuine gap found and fixed here:** `README.md` (717 lines,
+the generic KSoR-scaffold onboarding doc) had a stray leftover `# KSOR-HANDBOOK`
+heading dangling at the very end — the same class of GitHub-auto-init
+merge artifact found and removed from `ksor-worker`'s README in the same
+audit. Removed. (Not otherwise mentioning the refund widget/agents was
+judged NOT a gap — that's `AGENTS.md`'s job, already updated earlier this
+session, and `README.md` is the generic scaffold doc, not the
+project-specific operational contract.)
+
 ## Open items
 
 - `.ksor/governance.yaml` approval authority is still the placeholder actor
