@@ -145,6 +145,46 @@
   (restarting periodically after an ingest is normal hygiene), but the
   actual root cause turned out to be the flip issue above, not staleness
   from the long-running process.
+- **`ksor-worker` gained a `/refund` endpoint with real conversation
+  memory** (separate repo — see its own `progress.md` and
+  `docs/adr/003-refund-agent-memory.md` for the full build, including a
+  domain-split reliability bug found and fixed there). Relevant here only
+  because of what it needed from this repo: `refund-policy.md` (above) as
+  groundable content, and confirmation that a refund question asked
+  through this record's *general* MCP-connected agent gets declined in
+  favor of the dedicated refund agent — a prompt-only version of that
+  exclusion was tested and found unreliable (answered a refund question
+  directly on 3/3 calls); the working fix is a deterministic keyword check
+  in `ksor-worker`'s own code, not anything in this record.
+- **Added a floating refund-assistant chat widget**, global on every page
+  (`system/site/components/refund-widget.tsx`, mounted in `app/layout.tsx`,
+  commit `c9a815e`). It calls `ksor-worker`'s `/refund` endpoint directly
+  from the browser — this site is a static export (`output: "export"`,
+  confirmed in `next.config.mjs`) with no live Next server at runtime, so a
+  conventional API route can't proxy the request; CORS on `ksor-worker`'s
+  side is what makes the direct browser call possible instead.
+  - Building the one missing shadcn primitive (`npx shadcn@latest add
+    input`) pulled in an unwanted `cn` npm package and generated code
+    importing from it (`import { cn } from "cn"`) instead of this
+    codebase's own `@/lib/utils` — inconsistent with every other
+    component here. Fixed the import and reverted the unwanted dependency
+    (`npm install` after removing it from `package.json` to resync the
+    lockfile) before committing.
+  - Verified: `tsc --noEmit` clean; a fresh `npm run dev` (after killing a
+    stale dev server left running from earlier in the session — a second
+    `next dev` refuses to start on an occupied port rather than silently
+    picking up code changes on the old one) served the widget's launcher
+    markup on the homepage; a real browser-shaped `OPTIONS` preflight
+    request against `ksor-worker`'s `/refund` (the actual cross-origin
+    call the widget makes) returned the correct
+    `access-control-allow-origin` for `http://localhost:3000`. Not
+    verified: an actual click-through in a real browser — no browser
+    automation tool was available in this session, so this is wiring-level
+    verification, not a substitute for opening it and using it once.
+  - `AGENTS.md`'s "Operational rules" section now documents this as a
+    third required local-dev process, and `NEXT_PUBLIC_KSOR_WORKER_URL`
+    as the build-time env var pointing the widget at a non-default
+    backend URL.
 
 ## Open items
 
