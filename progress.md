@@ -1,5 +1,61 @@
 # Progress Log — Ibrahim Digital Solutions Affiliate Knowledge Base
 
+## 2026-09-22 (later) — Live end-to-end confirmation with the user; MCP port conflict resolved
+
+After the widget build below, the user tested `ksor serve` themselves and
+hit `cannot bind 127.0.0.1:8080 — another process is already listening
+there`. Cause: a leftover `ksor serve` from this session's own testing was
+still holding the port in the background. **Not a bug** — `ksor serve` is
+a foreground process that keeps the terminal busy printing logs and never
+returns a prompt; running it, then closing that terminal (or thinking it
+"didn't work" because the prompt never came back) leaves it either still
+running in the background or killed outright, either way confusing the
+next attempt in a fresh terminal. Fixed by killing the stray process and
+restarting it detached (`nohup ... &`) so it stays live without occupying
+a terminal. **Operational takeaway for daily use**: run `ksor serve` in
+its own terminal and leave it open, or run it detached — don't run it,
+close the terminal, then wonder why the next `npm run serve` won't bind.
+
+Confirmed live, via direct `/triage` calls, with the user watching:
+- `"KSOR kya hai"` → `TriageAgent` → handoff → `KSORWorker` → real Neon/
+  pgvector search → grounded, correct answer. Full pipeline confirmed
+  working end-to-end, not just claimed.
+- `"mera refund kab aayega"` → correctly routed to `RefundSpecialist`, but
+  the ANSWER hit the already-documented pre-existing Roman-Urdu
+  inconsistency in `refund_agent.py` (declined instead of answering) —
+  shown to the user as evidence, not hidden; routing itself was correct.
+
+**Widget semantics, clarified with the user and worth keeping precise for
+next time** (a natural point of confusion, asked about repeatedly this
+session):
+- Both **General** and **Smart Triage** answer from the same KSOR record
+  via Neon — "General vs Triage" is NOT "general questions vs KSOR
+  questions." Either mode can answer any KSOR question.
+- **General** (`/chat`) is ONE agent, no handoff, no specialist behavior —
+  it does not redact PII, does not self-check groundedness, does not give
+  model-selection advice; it just answers everything itself, refunds
+  included.
+- **Smart Triage** (`/triage`) is the only mode that hands off — every
+  query goes to `TriageAgent` first, which routes to exactly one of 5
+  specialists, each with genuinely different behavior for its category
+  (PII redaction, groundedness self-check, refund-only scope, or
+  model-advice-only with no KSOR answer at all). "Routed to: X" is the
+  visible symptom of this; the deeper difference is the specialized
+  behavior itself, not just whether a label is shown.
+
+Gave the user 5 ready-made test queries (one per specialist) to run
+through `ksor-worker`'s standalone CLI (`uv run python -m
+ksor_worker.triage_agent`) before testing the widget — confirmed with the
+user that running the triage agent alone is sufficient; there is no need
+to separately run `worker.py`/`refund_agent.py`/`eval_agent.py`/
+`policy_agent.py`/`router_agent.py` to cover the same ground, since
+`triage_agent.py` hands off to equivalents of all of them internally.
+
+**Live status at the end of this session**: all three processes running —
+`ksor serve` on :8080 (MCP), `ksor-worker`'s `uvicorn` on :8000, Next dev
+on :3000 — ready for the user to test both the widget and the terminal
+script themselves.
+
 ## 2026-09-22 — Widget: General/Smart Triage toggle
 
 The pending task from the 2026-09-21 handoff (below) is done, built on the
