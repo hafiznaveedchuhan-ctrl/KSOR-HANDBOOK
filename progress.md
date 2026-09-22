@@ -1,5 +1,59 @@
 # Progress Log — Ibrahim Digital Solutions Affiliate Knowledge Base
 
+## 🔴 SESSION HANDOFF (2026-09-21, latest) — read this before doing anything
+
+Context window was filling up; the user is about to `/clear` and start a
+fresh session. **This section lets a brand-new AI session with zero
+conversation memory pick up exactly where this one stopped.** Full detail
+of everything built this session is in `ksor-worker`'s own `progress.md`
+(a separate repo, `~/ksor-worker`) — read that file's own handoff section
+first, this one covers only what's specific to `handbook`.
+
+### What's true about `handbook` right now
+- This repo is the KSOR knowledge record: Next.js/Fumadocs site +
+  `ksor serve` MCP server. GitHub: `hafiznaveedchuhan-ctrl/KSOR-HANDBOOK`,
+  pushed, CI green (`Format checker`).
+- `knowledge/` has 4 real Amazon-affiliate content docs (3 still `draft`:
+  `what-is-amazon-affiliate`, `product-hunting-guide`, `content-strategy`;
+  1 `stable`: `how-to-write-product-reviews`) plus 3 more added this
+  session, all `stable`/approved: `product-sourcing`, `product-listing`,
+  `refund-policy`. Plus 5 unrelated KSoR-starter scaffold docs.
+- `system/site/components/assistant-widget.tsx` — a floating chat widget,
+  mounted globally in `app/layout.tsx`, calling `ksor-worker`'s `/chat`
+  endpoint (general assistant, no topic split, has memory). This site is a
+  **static export** (`output: "export"` in `next.config.mjs`) — no live
+  Next server at runtime, so the widget must call `ksor-worker` directly
+  from the browser (CORS-scoped via `ALLOWED_ORIGINS` on that side), never
+  through a Next API route.
+- `AGENTS.md`'s "Operational rules — Ibrahim Digital Solutions" section
+  (near the end of the file) documents the 3-process local dev setup and
+  the widget's dependency on `ksor-worker` — already accurate as of this
+  commit, but will need a small update once `/triage` exists (see below).
+
+### 🎯 The pending task (not started) — full detail in `ksor-worker`'s progress.md
+The user wants a **triage/orchestration agent** in `ksor-worker` (real
+OpenAI Agents SDK `handoffs`, not a fake if/else), with a **new toggle in
+this repo's widget** — "General" (existing, calls `/chat`) vs "Smart
+Triage" (new, will call `/triage`), showing a "Routed to: X" caption under
+each reply in triage mode. The approved plan is at
+`/home/naveed/.claude/plans/create-a-new-knowledge-parsed-pearl.md`.
+**Nothing has been built yet** — `assistant-widget.tsx` currently has only
+one mode. The `ksor-worker` side (5 specialist agents, `/triage` endpoint)
+needs to exist and be tested live before this repo's widget change makes
+sense to build.
+
+### Local dev (all likely stopped if this is a fresh session)
+```sh
+npm run dev      # site :3000
+npm run serve    # ksor serve MCP :8080
+# separately, in ~/ksor-worker:
+uv run uvicorn main:app --port 8000
+```
+`npm run check` must pass before any `knowledge/` commit;
+`npm run refresh` after any `knowledge/` edit (and confirm the CLI prints
+`FLIPPED active generation -> N` — a flip that doesn't print that line
+silently didn't activate, a real bug hit this session).
+
 ## Milestones
 
 - [x] KSoR initialized with `npx ksor init` (2026-09-14, commit `0d61252`).
