@@ -1013,13 +1013,24 @@ Everything. The scaffold was emitted by `ksor init` (version recorded in
 - **The site's chat widget needs a third process**: `ksor-worker` — a
   separate repository, not part of this one — running its own FastAPI app
   (`uv run uvicorn main:app --port 8000` in that project). The widget calls
-  its `/chat` endpoint directly from the browser (this site is a static
-  export with no live server of its own to proxy through), so `ksor-worker`
-  must be reachable at the URL the widget's build was given. `/chat` is the
-  general, unrestricted-by-topic assistant (refunds included, no domain
-  split) — distinct from that project's narrower `/ask` (excludes refunds)
-  and `/refund` (refunds only) endpoints, which the widget does not call.
-  `handbook`/`ksor-worker` are deliberately separate repos and
+  its endpoints directly from the browser (this site is a static export
+  with no live server of its own to proxy through), so `ksor-worker` must
+  be reachable at the URL the widget's build was given. The widget has two
+  modes, a toggle at the top of its panel:
+  - **General** — `/chat`, the general, unrestricted-by-topic assistant
+    (refunds included, no domain split).
+  - **Smart Triage** — `/triage`, a real orchestration agent (OpenAI
+    Agents SDK `handoffs`, not a keyword dispatcher) that routes each
+    query to one of 5 specialists and returns which one actually answered
+    (`routed_to`), shown under each reply as "Routed to: X". See
+    `ksor-worker`'s `triage_agent.py` and `docs/adr/005-triage-handoffs.md`.
+
+  Both modes keep separate session memory (separate `localStorage` keys on
+  this side, separate `SQLiteSession` stores on `ksor-worker`'s side) — a
+  General conversation and a Smart Triage conversation never share
+  history. Distinct from `ksor-worker`'s narrower `/ask` (excludes
+  refunds) and `/refund` (refunds only) endpoints, which the widget does
+  not call. `handbook`/`ksor-worker` are deliberately separate repos and
   toolchains (npm vs. uv) — see `ksor-worker`'s own `docs/adr/` for why.
 
 Stack: Next.js + Fumadocs (site), Neon Postgres + pgvector (embeddings), ksor

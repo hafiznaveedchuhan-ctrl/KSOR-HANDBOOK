@@ -1,6 +1,29 @@
 # Progress Log — Ibrahim Digital Solutions Affiliate Knowledge Base
 
-## 🔴 SESSION HANDOFF (2026-09-21, latest) — read this before doing anything
+## 2026-09-22 — Widget: General/Smart Triage toggle
+
+The pending task from the 2026-09-21 handoff (below) is done, built on the
+`ksor-worker` side too (see that repo's own `progress.md` for the full
+account — 3 real bugs found and fixed live, 1 subtler cross-specialist
+memory bug found and fixed, 2 pre-existing issues found and documented but
+deliberately not touched, all out of scope for this task).
+
+`system/site/components/assistant-widget.tsx` now has a General/Smart
+Triage toggle at the top of the panel. General calls `ksor-worker`'s
+`/chat` (unchanged). Smart Triage calls its new `/triage` endpoint — a
+real orchestration agent, not a keyword dispatcher — and shows "Routed
+to: X" under each reply, taken directly from the API response's
+`routed_to` field. Each mode keeps its own `localStorage` session id and
+its own message history, matching `/chat` and `/triage` keeping separate
+`SQLiteSession` stores on the backend. `tsc --noEmit` clean; the running
+dev server hot-reloaded with no compile errors and the homepage still
+serves 200. No real browser automation tool was available this session to
+click through the toggle in an actual browser — noted honestly rather
+than claimed as verified; the underlying `/chat` and `/triage` HTTP calls
+it makes were both extensively live-tested via curl on `ksor-worker`'s
+side first.
+
+## 🔴 SESSION HANDOFF (2026-09-21) — superseded, task above is now done
 
 Context window was filling up; the user is about to `/clear` and start a
 fresh session. **This section lets a brand-new AI session with zero
